@@ -1,6 +1,6 @@
-# pcaptomsc
+# pcap_reading
 
-converting wireshark packet capture (pcap) into message sequence chart for sequencediagram.net, hackmd.io, or mscgen (png, svg, and eps format).
+Converting wireshark packet capture (pcap) into info, illustrations, etc.
 
 ## Requirements
 - wireshark
