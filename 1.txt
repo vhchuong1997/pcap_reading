@@ -1,0 +1,6 @@
+
+0.0	D-LinkIn_58:d3:9d	Broadcast	400.0	0.0	Beacon frame
+0.007969	D-LinkIn_58:d3:9d (bc:0f:9a:58:d3:9d) (TA)	e6:96:2b:48:98:d5 (e6:96:2b:48:98:d5) (RA)	76.0	238.0	Request-to-send
+0.117739	-	D-LinkIn_58:d3:9d (bc:0f:9a:58:d3:9d) (RA)	70.0	194.0	Clear-to-send
+0.582577	D-LinkIn_58:d3:98	Broadcast	138.0	0.0	Data
+2.772634	e6:96:2b:48:98:d5	D-LinkIn_58:d3:98	142.0	48.0	QoS Data

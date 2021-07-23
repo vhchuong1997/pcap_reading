@@ -11,10 +11,14 @@ Converting wireshark packet capture (pcap) into info, illustrations, etc.
 `git clone https://github.com/vhchuong1997/pcap_reading.git`
 
 ## Usage
-- `python pcaptolist.py -i <pcap_file_input> -o <txt_file_output>`
+- `python pcaptotxt.py -i <pcap_file_input> -o <txt_file_output>`
 
-	The method will read th inpute pcap file and write the specified parameters from the pcap file to txt file.
-	Example: `python pcaptolist.py -i 'broadcom.pcap' -o 'result.txt'`
+	The method will read the input pcap file and write the specified parameters from the pcap file to txt file.
+	Example: `python pcaptotxt.py -i 'broadcom.pcap' -o 'result.txt'`
+
+- `python visualize_throughput.py -i <pcap_file_input>`
+	The method will read the input pcap file and draw throughput figure (line format)
+	Example: `python visualize_throughput.py -i 'broadcom.pcap'
 
 ## Hackmd Page
 ### [hackmd page](https://hackmd.io/@Jon97/HyzTUOY2u)

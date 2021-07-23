@@ -12,6 +12,7 @@
 
 import sys
 import pandas as pd
+import getopt
 from subprocess import Popen, PIPE
 from tshark import tshark
 import matplotlib.pyplot as plt
@@ -70,34 +71,57 @@ def pcaptolist(tshark_path, input_file):
 
     return source_list, des_list, dur_list, type_list,time_list,frlen_list
 
+def main(argv):
+    
+    try:
+        # opts is a list of returning key-value pairs, args is the options left after striped
+        # the short options 'hi:o:', if an option requires an input, it should be followed by a ":"
+        # the long options 'ifile=' is an option that requires an input, followed by a "="
+        opts, args = getopt.getopt(argv,"hi:",["ifile="])
+    except getopt.GetoptError:
+        print("pcaptolist.py -i <inputfile> -o <output_file>")
+        sys.exit(2)
+    for opt, arg in opts:
+        if opt == "-h":
+            print("pcaptolist.py -i <inputfile> -o <output_file>")
+            sys.exit()
+        elif opt in ("-i", "--ifile"):
+            inputfile = arg
+        
+        else:
+            print("image output must use mscgen as format parameter.\n")
+            print("please specify the format parameter before output parameter.\n")
 
-tshark_path = tshark.get_tshark_path()
-print(tshark_path)
-if (tshark_path == 0):
-        print("tshark not found. Please install Wireshark.")
+    tshark_path = tshark.get_tshark_path()
+    print(tshark_path)
+    if (tshark_path == 0):
+            print("tshark not found. Please install Wireshark.")
 
-source_list, des_list, dur_list, type_list,time_list,frlen_list = pcaptolist( tshark_path,'123.pcap')
+    source_list, des_list, dur_list, type_list,time_list,frlen_list = pcaptolist( tshark_path,inputfile)
 
-# d = {'time':time_list,'frame length':frlen_list,'source':source_list,'destination':des_list,'duration':dur_list,'fr_type':type_list}
-d = {'time':time_list,'frame length':frlen_list}
-df = pd.DataFrame(data=d)
-# df2 = df.iloc[-1:]
-final_time = round(df.iloc[-1:]['time'].values[0])
-print(final_time)
+    # d = {'time':time_list,'frame length':frlen_list,'source':source_list,'destination':des_list,'duration':dur_list,'fr_type':type_list}
+    d = {'time':time_list,'frame length':frlen_list}
+    df = pd.DataFrame(data=d)
+    # df2 = df.iloc[-1:]
+    final_time = round(df.iloc[-1:]['time'].values[0])
+    print(final_time)
 
-time_range_list = []
-num_packet_list = []
+    time_range_list = []
+    num_packet_list = []
 
-for i in range(1,final_time+1):
-    dfi = df.loc[(df['time'] <= i) & (df['time'] >= i-1)]
-    time_range_list.append(i-1)
-    num_packet_list.append(len(dfi.index))
-    del(dfi)
+    for i in range(1,final_time+1):
+        dfi = df.loc[(df['time'] <= i) & (df['time'] >= i-1)]
+        time_range_list.append(i-1)
+        num_packet_list.append(len(dfi.index))
+        del(dfi)
 
-dfi = pd.DataFrame(data={'time':time_range_list, 'throughput':num_packet_list})
-dfi.plot(x ='time', y='throughput', kind = 'line')
-# dfi.plot(x ='time', y='throughput', drawstyle = 'steps')
-plt.xlabel('time')
-plt.ylabel('throughput (packets/s)')
+    dfi = pd.DataFrame(data={'time':time_range_list, 'throughput':num_packet_list})
+    dfi.plot(x ='time', y='throughput', kind = 'line')
+    # dfi.plot(x ='time', y='throughput', drawstyle = 'steps')
+    plt.xlabel('time')
+    plt.ylabel('throughput (packets/s)')
 
-plt.show()
+    plt.show()
+
+if __name__ == "__main__":
+    main(sys.argv[1:])
