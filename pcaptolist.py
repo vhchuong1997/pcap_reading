@@ -2,11 +2,7 @@
 # -*- coding: UTF-8 -*-
 """
     pcaptolist
-    ~~~~~~~~~~~~~~~~~~~~
-    Allow PCAP capture formated to list-of-dictionary for further process.
 
-    See the README file for details.
-    :author: Jonathan <m10802821@gapps.ntust.edu.tw>.
     :license: MIT, see LICENSE for details.
 """
 
@@ -18,22 +14,25 @@ from tshark import tshark
 
 
 def pcaptolist(tshark_path, input_file):
-# res = ''
-    time_list=[]
-    frlen_list=[]
-    source_list=[]
-    des_list=[]
-    dur_list=[]
-    type_list=[]
-    pipe = Popen(tshark_path+" -r "+ input_file + " -T tabs", stdout=PIPE)
-    text = pipe.communicate()[0]
-    # print(text)
-    lists = str(text,'utf-8').split('\r\n')
+    res = '' # create empty string
+    # time_list=[]
+    # frlen_list=[]
+    # source_list=[]
+    # des_list=[]
+    # dur_list=[]
+    # type_list=[]
+    pipe = Popen(tshark_path+" -r "+ input_file + " -T tabs", stdout=PIPE) #read pcap file using tshark
+    text = pipe.communicate()[0] # extract the info from the pcap file as shown when it is loaded by tshark
+    
+    # split the info into a list of lines denoted by \r\n. định dạng của kí tự xống dòng trong Window là \r\n
+    # Each line has parameters from a packet
+    lists = str(text,'utf-8').split('\r\n') 
+
     a = 0
     for i in lists:
         # print(i)
         a += 1
-        temp =  i.strip().split('\t')
+        temp =  i.strip().split('\t') # convert i into a list of parameters, seperated by \t (tab)
         # print(len(temp))
         if len(temp) > 7:
             time = float(temp[1].strip())
@@ -54,19 +53,16 @@ def pcaptolist(tshark_path, input_file):
                 duration = float(duration)
 
             fr_type = temp[10].strip()
-            time_list.append(time)
-            frlen_list.append(fr_len)
-            source_list.append(source)
-            des_list.append(destination)
-            dur_list.append(duration)
-            type_list.append(fr_type)
+            # time_list.append(time)
+            # frlen_list.append(fr_len)
+            # source_list.append(source)
+            # des_list.append(destination)
+            # dur_list.append(duration)
+            # type_list.append(fr_type)
 
-            line = '\t'.join((time,source,destination,fr_len,duration,fr_type))
-            res = res + '\n' + line
-            
-            # res.append(el)
-            # if a == 1000:
-            #     break
+            line = '\t'.join((str(time),source,destination,str(fr_len),str(duration),fr_type)) # Join all the needed parameters into a new line
+            res = res + '\n' + line # Join the line together, separated by \n (enter)
+
     return res
 
 def main(argv):
@@ -75,13 +71,13 @@ def main(argv):
         # opts is a list of returning key-value pairs, args is the options left after striped
         # the short options 'hi:o:', if an option requires an input, it should be followed by a ":"
         # the long options 'ifile=' is an option that requires an input, followed by a "="
-        opts, args = getopt.getopt(argv,"hi:o:f:",["ifile=","ofile="])
+        opts, args = getopt.getopt(argv,"hi:o:",["ifile=","ofile="])
     except getopt.GetoptError:
-        print("pcaptomsc.py -i <inputfile> -o <output_file>")
+        print("pcaptolist.py -i <inputfile> -o <output_file>")
         sys.exit(2)
     for opt, arg in opts:
         if opt == "-h":
-            print("pcaptomsc.py -i <inputfile> -o <output_file>")
+            print("pcaptolist.py -i <inputfile> -o <output_file>")
             sys.exit()
         elif opt in ("-i", "--ifile"):
             inputfile = arg
@@ -94,16 +90,16 @@ def main(argv):
                 print("please specify the format parameter before output parameter.\n")
         
 
-    tshark_path = tshark.get_tshark_path()
+    tshark_path = tshark.get_tshark_path() # get the path of tshark in program file folder
     print(tshark_path)
     if (tshark_path == 0):
-            print("tshark not found. Please install Wireshark.")
+        print("tshark not found. Please install Wireshark.")
 
     res = pcaptolist( tshark_path,inputfile)
     # print(res)
-    text_file = open(output_file, "w")
-    n = text_file.write(res)
-    text_file.close()
+    text_file = open(output_file, "w") # create txt file for writing
+    n = text_file.write(res) # write the res string into the txt file
+    text_file.close() # close and save txt file into the same folder 
 
 
 if __name__ == "__main__":
