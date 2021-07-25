@@ -20,6 +20,10 @@ Converting wireshark packet capture (pcap) into info, illustrations, etc.
 	The method will read the input pcap file and draw throughput figure (line format)
 	Example: `python visualize_throughput.py -i 'broadcom.pcap'
 
+- `python pyshark_visualize_throughput.py -i <pcap_file_input> -o <csv_file_output>`
+	The method will read the input pcap file, draw throughput figure (line format) and write the specified parameters from the pcap file to csv file.
+	Example: `python .\pyshark_visualize_throughput.py -i 2222.cap -o output.csv'`
+
 ## Hackmd Page
 ### [hackmd page](https://hackmd.io/@Jon97/HyzTUOY2u)
 
