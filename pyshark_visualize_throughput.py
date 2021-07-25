@@ -30,37 +30,38 @@ def main(argv):
                 print("please specify the format parameter before output parameter.\n")
 
 
-    capture = pyshark.FileCapture(inputfile)
+    capture = pyshark.FileCapture(inputfile) # read pcap file by pyshark
 
     time_list = []
     frlen_list = []
-    for packet in capture:
+
+    for packet in capture: # Extract the desired parameters
         time_list.append(float(packet.frame_info.time_relative))
         frlen_list.append(float(packet.length))
 
-    d = {'time':time_list,'frame length':frlen_list}
+    d = {'time':time_list,'frame length':frlen_list} # Create panda dataframe from the extracted parameters
     df = pd.DataFrame(data=d)
 
-    final_time = round(df.iloc[-1:]['time'].values[0])
+    final_time = round(df.iloc[-1:]['time'].values[0]) # get the final time interval
     print(final_time)
 
     time_range_list = []
     num_packet_list = []
 
-    for i in range(final_time):
+    for i in range(final_time): # Infer the throughput parameter
         dfi = df.loc[(df['time'] <= i+1) & (df['time'] >= i)]
         time_range_list.append(i)
         num_packet_list.append(dfi['frame length'].sum())
         del(dfi)
 
-    dfi = pd.DataFrame(data={'time':time_range_list, 'throughput':num_packet_list})
-    if output_flag == True:
-        dfi.to_csv(output_file,)
-    dfi.plot(x ='time', y='throughput', kind = 'line')
+    dfi = pd.DataFrame(data={'time':time_range_list, 'throughput':num_packet_list}) # Create pandas dataframe of throughput
+    
+    if output_flag == True: # Write csv file of the throughput data
+        dfi.to_csv(output_file)
 
+    dfi.plot(x ='time', y='throughput', kind = 'line') # Plot throughput data
     plt.xlabel('time')
     plt.ylabel('throughput (bytes/s)')
-
     plt.show()
 
 if __name__ == "__main__":
